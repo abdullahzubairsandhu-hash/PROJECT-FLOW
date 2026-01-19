@@ -5,32 +5,29 @@
 import * as React from "react";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { Menu, Search, Command, LayoutGrid } from "lucide-react"; 
+import { Menu, LayoutGrid } from "lucide-react"; 
 import { cn } from "@/lib/utils";
-//import type { User } from "@/types/user";
-// import { useState, useEffect } from "react";
-import type { Notification } from "@prisma/client"; // Import the strict type
-import type { AuthUser } from "@/types/auth-user"; // Import this
-import { NotificationFeed } from "@/components/notifications/notification-feed"; // Import your new component
+import type { Notification } from "@prisma/client";
+import type { AuthUser } from "@/types/auth-user";
+import { NotificationFeed } from "@/components/notifications/notification-feed";
+import { GlobalSearch } from "@/components/dashboard/global-search"; // Integrated Search Component
 
 interface HeaderProps {
   user: AuthUser;
   onMenuClick: () => void;
-  notifications: Notification[]; // Added this line
+  notifications: Notification[];
 }
 
 export function Header({ user, onMenuClick, notifications }: HeaderProps) {
   const [mounted, setMounted] = React.useState(false);
 
-React.useEffect(() => {
-  // Use requestAnimationFrame or a simple 0ms timeout 
-  // to move the setState out of the synchronous render flow
-  const handle = requestAnimationFrame(() => {
-    setMounted(true);
-  });
-  
-  return () => cancelAnimationFrame(handle);
-}, []);
+  React.useEffect(() => {
+    const handle = requestAnimationFrame(() => {
+      setMounted(true);
+    });
+    
+    return () => cancelAnimationFrame(handle);
+  }, []);
 
   return (
     <header className={cn(
@@ -63,26 +60,13 @@ React.useEffect(() => {
         </div>
       </div>
 
-      {/* Center Section: Global Command Trigger */}
+      {/* Center Section: Global Command Trigger (Integrated Search) */}
       <div className="hidden md:flex flex-1 max-w-lg mx-12">
-        <button className={cn(
-          "flex items-center justify-between w-full h-10 px-4 rounded-xl",
-          "bg-zinc-900/30 border border-white/5 text-zinc-500 hover:bg-zinc-900/50 hover:border-white/10 transition-all group"
-        )}>
-          <div className="flex items-center gap-3">
-            <Search size={14} className="group-hover:text-emerald-500 transition-colors" />
-            <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500 group-hover:text-zinc-300">Execute System Command...</span>
-          </div>
-          <div className="flex items-center gap-1.5 bg-zinc-950 px-2 py-1 rounded-md border border-white/10 shadow-lg">
-            <Command size={11} className="text-zinc-400" />
-            <span className="text-[10px] font-black text-zinc-400">K</span>
-          </div>
-        </button>
+        <GlobalSearch />
       </div>
 
       {/* Right Section: Intel & Inset Profile */}
       <div className="flex items-center gap-4">
-        {/* REPLACED STATIC BELL WITH DYNAMIC FEED */}
         <NotificationFeed initialNotifications={notifications} />
 
         <div className="h-6 w-[1px] bg-white/5 mx-2" />
@@ -103,30 +87,22 @@ React.useEffect(() => {
                 elements: {
                   avatarBox: "w-9 h-9 rounded-xl border-2 border-white/10 group-hover:border-emerald-500/50 transition-all duration-500 shadow-xl",
                   userButtonTrigger: "focus:ring-0 shadow-none outline-none",
-                  
-                  // 1. THE CARD: Darker background with a distinct border
                   userButtonPopoverCard: "bg-zinc-950 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,1)]",
-                  
-                  // 2. THE BUTTONS: Force text to be visible (Zinc-200) before hover
                   userButtonPopoverActionButton: "hover:bg-emerald-500/10 transition-colors py-3 px-4",
-                  userButtonPopoverActionButtonText: "text-zinc-100 font-bold text-[11px] uppercase tracking-wider !opacity-100", // !opacity-100 forces visibility
+                  userButtonPopoverActionButtonText: "text-zinc-100 font-bold text-[11px] uppercase tracking-wider !opacity-100",
                   userButtonPopoverActionButtonIcon: "text-emerald-500",
-                  
-                  // 3. THE PREVIEW: User name and email visibility
                   userPreviewMainIdentifier: "text-white font-black uppercase tracking-tight",
                   userPreviewSecondaryIdentifier: "text-zinc-400 font-medium",
-                  
-                  // 4. CLEANUP
                   userButtonPopoverFooter: "hidden", 
                 },
               }}
             />
             {mounted && (
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-zinc-950 rounded-full flex items-center justify-center">
-               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-            </div>
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-zinc-950 rounded-full flex items-center justify-center">
+                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+              </div>
             )}
-            </div>
+          </div>
         </div>
       </div>
     </header>
