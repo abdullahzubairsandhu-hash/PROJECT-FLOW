@@ -1,3 +1,26 @@
+# NODE_NETWORK v1.0
+
+An Industrial-grade Project Management System.
+
+## 🚀 Quick Start
+1. Clone the repo
+2. Install dependencies: `npm install`
+3. Setup `.env` (Prisma & Clerk keys)
+4. Push schema: `npx prisma db push`
+5. Run dev: `npm run dev`
+
+## 🛠 Features
+- **Task Matrix:** High-density task management.
+- **Node Network:** Member directory with live performance stats.
+- **The Vault:** Project-scoped asset management.
+- **Control Center:** User identity and protocol settings.
+
+
+
+
+
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
