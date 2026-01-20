@@ -1,14 +1,16 @@
 // types/project.ts
 
+import { ProjectRole } from "./project-member";
 export interface Project {
   id: string;
   name: string;
   description: string | null;
   status: ProjectStatus;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
   ownerId: string;
   taskCount: number; 
+  currentUserRole?: ProjectRole;
 }
 
 export type ProjectStatus = "PLANNING" | "ACTIVE" | "COMPLETED";

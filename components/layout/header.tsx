@@ -82,7 +82,10 @@ export function Header({ user, onMenuClick, notifications }: HeaderProps) {
           </div>
 
           <div className="relative flex items-center justify-center">
-            <UserButton
+            {/* Wrap the UserButton in the mounted check */}
+            {mounted ? (
+              <>
+              <UserButton
               appearance={{
                 elements: {
                   avatarBox: "w-9 h-9 rounded-xl border-2 border-white/10 group-hover:border-emerald-500/50 transition-all duration-500 shadow-xl",
@@ -96,13 +99,17 @@ export function Header({ user, onMenuClick, notifications }: HeaderProps) {
                   userButtonPopoverFooter: "hidden", 
                 },
               }}
-            />
-            {mounted && (
+              />
+              {/* Your green "Online" dot logic */}
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-zinc-950 rounded-full flex items-center justify-center">
-                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
               </div>
-            )}
-          </div>
+              </>
+              ) : (
+                /* Placeholder to prevent layout shift while mounting */
+                <div className="w-9 h-9 rounded-xl bg-white/5 animate-pulse" />
+                )}
+            </div>
         </div>
       </div>
     </header>

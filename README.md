@@ -2,19 +2,29 @@
 
 An Industrial-grade Project Management System.
 
-## 🚀 Quick Start
-1. Clone the repo
+# ⚡ NODE_NETWORK | Industrial Project Management
+
+A high-performance Project Management System built for speed and technical precision.
+
+## 🛠 Tech Stack
+- **Framework:** Next.js 14 (App Router)
+- **Database:** PostgreSQL via Prisma ORM
+- **Auth:** Clerk (Server-side validation)
+- **UI:** Shadcn UI + Tailwind CSS
+- **Icons:** Lucide React
+
+## 🚀 Key Modules
+- **Project Matrix:** Comprehensive lifecycle management for industrial projects.
+- **Task Execution Engine:** Granular task tracking with sub-task execution items.
+- **Node Network:** Member directory with real-time performance analytics.
+- **The Vault:** Secure asset and resource centralization.
+
+## 🏁 Setup Instructions
+1. Clone the repository.
 2. Install dependencies: `npm install`
-3. Setup `.env` (Prisma & Clerk keys)
-4. Push schema: `npx prisma db push`
-5. Run dev: `npm run dev`
-
-## 🛠 Features
-- **Task Matrix:** High-density task management.
-- **Node Network:** Member directory with live performance stats.
-- **The Vault:** Project-scoped asset management.
-- **Control Center:** User identity and protocol settings.
-
+3. Configure your `.env` with Clerk and Database credentials.
+4. Sync database: `npx prisma db push`
+5. Start development: `npm run dev`
 
 
 

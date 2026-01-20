@@ -8,6 +8,7 @@ import { ProjectActions } from "./project-actions";
 import type { Project } from "@/types/project";
 import { cn } from "@/lib/utils";
 import { Calendar, CheckSquare, Folder } from "lucide-react";
+import { ProjectRoleBadge } from "./project-role-badge";
 import {
   Tooltip,
   TooltipContent,
@@ -44,7 +45,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       
       <CardHeader className="relative space-y-4 pb-4">
         {/* Header Container: Title & Status */}
-        <div className="flex items-start justify-between gap-4 w-full">
+        <div className="flex flex-col gap-3 w-full">
           
           {/* Left Side: Icon & Truncated Title */}
           <div className="flex items-center gap-3 min-w-0 relative z-30"> 
@@ -77,6 +78,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
             </span>
           </div>
         </div>
+        {project.currentUserRole && (
+            <div className="relative z-30">
+              <ProjectRoleBadge 
+                role={project.currentUserRole} 
+                className="bg-zinc-900/50 backdrop-blur-sm border-white/[0.03]" 
+              />
+            </div>
+          )}
 
         <CardDescription className="text-zinc-500 text-sm line-clamp-2 leading-relaxed min-h-[2.5rem]">
           {project.description || "No description provided"}

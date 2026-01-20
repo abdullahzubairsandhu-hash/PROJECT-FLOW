@@ -26,6 +26,10 @@ export async function getUserProjects(userId: string): Promise<Project[]> {
       _count: {
         select: { tasks: true },
       },
+      members: {
+        where: { userId: userId },
+        select: { role: true }
+      }
     },
     orderBy: {
       createdAt: "desc",
@@ -33,7 +37,7 @@ export async function getUserProjects(userId: string): Promise<Project[]> {
   });
 
   // This ensures your return type 'Project[]' remains identical to what it was
-  return mapPrismaProjectsToProjects(projects);
+  return mapPrismaProjectsToProjects(projects, userId);
 }
 
 export async function getProjectById(
@@ -59,12 +63,12 @@ export async function getProjectById(
     return null;
   }
 
-  const mappedProject = mapPrismaProjectToProject(project);
+  const mappedProject = mapPrismaProjectToProject(project, userId);
 
   return {
     ...mappedProject,
     currentUserRole: userRole,
-  };
+  }as ProjectWithRole;
 }
 
 export async function verifyProjectOwnership(

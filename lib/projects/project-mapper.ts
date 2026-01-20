@@ -1,12 +1,18 @@
-import type { Project as PrismaProject } from "@prisma/client";
+// lib/projects/project-mapper.ts
+
+import type { Project as PrismaProject, ProjectMember } from "@prisma/client";
 import type { Project, ProjectStatus } from "@/types/project";
 
 /**
  * Maps a single Prisma project → app Project
  */
 export function mapPrismaProjectToProject(
-  prismaProject: PrismaProject & { _count: { tasks: number } }
-): Project & { taskCount: number } {
+  prismaProject: PrismaProject & { 
+    _count: { tasks: number }, 
+    members?: Pick<ProjectMember, 'role'>[] 
+  },
+  currentUserId?: string
+): Project {
   const status = prismaProject.status as ProjectStatus;
 
   return {
@@ -18,6 +24,11 @@ export function mapPrismaProjectToProject(
     createdAt: prismaProject.createdAt,
     updatedAt: prismaProject.updatedAt,
     taskCount: prismaProject._count.tasks,
+
+    // ✅ Logic: Owner gets priority, otherwise check members array
+    currentUserRole: currentUserId === prismaProject.ownerId 
+      ? "OWNER" 
+      : (prismaProject.members?.[0]?.role || "MEMBER")
   };
 }
 
@@ -25,7 +36,11 @@ export function mapPrismaProjectToProject(
  * Maps multiple Prisma projects → app Projects[]
  */
 export function mapPrismaProjectsToProjects(
-  prismaProjects: (PrismaProject & { _count: { tasks: number } })[]
-): (Project & { taskCount: number })[] {
-  return prismaProjects.map(mapPrismaProjectToProject);
+  prismaProjects: (PrismaProject & { 
+    _count: { tasks: number }, 
+    members?: Pick<ProjectMember, 'role'>[] 
+  })[],
+  currentUserId: string
+): Project[] {
+  return prismaProjects.map((p) => mapPrismaProjectToProject(p, currentUserId));
 }

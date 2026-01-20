@@ -12,8 +12,8 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { DASHBOARD_NAV_LINKS } from "@/config/navigation";
+import { EasterEggSnake } from "@/components/dashboard/easter-egg-snake"; // Import the game
 
-// FIXED: Interface now matches the props being passed by AppShell
 interface SidebarProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
@@ -21,8 +21,8 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const pathname = usePathname();
+  const [showSnake, setShowSnake] = React.useState(false); // Secret state
 
-  // Helper to close sidebar on mobile navigation
   const handleClose = () => setIsOpen(false);
 
   return (
@@ -75,7 +75,6 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               </div>
               
               <div className="space-y-1.5">
-                {/* FIXED: Using centralized config mapping */}
                 {DASHBOARD_NAV_LINKS.map((link) => {
                   const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
                   const Icon = link.icon;
@@ -138,7 +137,11 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             </div>
 
             <div className="flex items-center justify-between px-1">
-              <span className="text-[10px] font-bold text-zinc-700 uppercase tracking-tighter">
+              {/* HIDDEN TRIGGER: v2.0.4-stable */}
+              <span 
+                onClick={() => setShowSnake(true)}
+                className="text-[10px] font-bold text-zinc-700 uppercase tracking-tighter cursor-default hover:text-zinc-500 transition-colors"
+              >
                 v2.0.4-stable
               </span>
               <span className="text-[10px] font-bold text-zinc-700 uppercase tracking-tighter">
@@ -148,6 +151,11 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           </div>
         </div>
       </aside>
+
+      {/* Snake Game Overlay */}
+      {showSnake && (
+        <EasterEggSnake onClose={() => setShowSnake(false)} />
+      )}
     </>
   );
 }

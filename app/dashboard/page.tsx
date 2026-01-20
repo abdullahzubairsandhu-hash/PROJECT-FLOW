@@ -14,29 +14,49 @@ const threeDaysFromNow = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 
 export default async function DashboardPage() {
   const user = await requireAuth();
+  const userProjectFilter = {
+    OR: [
+      { ownerId: user.id }, // User is the creator
+      { members: { some: { userId: user.id } } } // User is a member/admin/viewer
+    ]
+  };
 
   const [projectCount, taskStats, teamCount, expiringTasks] = await Promise.all([
-    prisma.project.count(),
+    prisma.project.count({
+      where: userProjectFilter
+    }),
     prisma.task.groupBy({
-      by: ['status'],
-      _count: true,
-    }),
+    by: ['status'],
+    where: {
+      project: userProjectFilter
+    },
+    _count: true,
+  }),
     prisma.user.findMany({
-      select: { imageUrl: true, firstName: true },
-      take: 5,
-    }),
-    prisma.task.findMany({
-      where: {
-        status: { not: 'DONE' },
-        dueDate: {
-          gte: now,
-          lte: threeDaysFromNow,
-        },
+    where: {
+      memberships: {
+        some: {
+          project: userProjectFilter
+        }
       },
-      take: 5,
-      orderBy: { dueDate: 'asc' },
-    }),
-  ]);
+      NOT: { id: user.id } // Optional: don't show yourself in the team list
+    },
+    select: { imageUrl: true, firstName: true },
+    take: 5,
+  }),
+    prisma.task.findMany({
+    where: {
+      project: userProjectFilter, // 👈 KEY FIX: Scoped to user's projects
+      status: { not: 'DONE' },
+      dueDate: {
+        gte: now,
+        lte: threeDaysFromNow,
+      },
+    },
+    take: 5,
+    orderBy: { dueDate: 'asc' },
+  }),
+]);
 
   const totalTasks = taskStats.reduce((acc, curr) => acc + curr._count, 0);
   const doneTasks = taskStats.find(s => s.status === 'DONE')?._count || 0;
